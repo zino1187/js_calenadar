@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+#stage{
+	width:740px;
+	height:640px;
+	margin:auto;
+}
+</style>
+<script>
+/*사각형을 정의한다*/
+class Rect{
+	constructor(container,width,height,bg, text){
+		this.div=document.createElement("div");
+		this.container=container;
+		this.width=width;
+		this.height=height;
+		this.bg=bg;
+		this.text=text;
+
+		this.div.style.width=this.width+"px";
+		this.div.style.height=this.height+"px";
+		this.div.style.background=this.bg;
+		this.div.style.float="left";
+		this.div.style.border=2+"px solid blue";
+		this.div.innerText=this.text;
+		this.div.style.fontSize="20px";
+
+
+		this.container.appendChild(this.div);
+	}
+}
+</script>
+<script>
+var days=["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
+
+/*--------------------------------------------
+month : 0부터 시작하므로 주의한다
+2018년 12월의 마지막 날을 구하려면 
+getLastDateOfMonth(2019,0) 넘긴 후,  setDate(-1) 로 설정하여 
+그날의 날짜를 구한다
+--------------------------------------------*/
+function getLastDateOfMonth(year, month){
+	var obj = new Date();
+
+	obj.setFullYear(year);
+	obj.setMonth(month+1);
+	obj.setDate(0); //이전 달의 마지막 날 반환
+
+	return obj.getDate();
+}
+function getStartDayOfMonth(year, month){
+	var obj = new Date();
+	obj.setFullYear(year);
+	obj.setMonth(month-1);
+	obj.setDate(1);
+	return obj.getDay();
+}
+
+//var yy=parseInt(prompt("원하는 연도를 입력하세요"));
+//var mm=parseInt(prompt("원하는 달을 입력하세요"));
+//var lastDate=getLastDateOfMonth(yy, mm-1);
+//document.write("입력한 "+mm+"월은 "+lastDate+" 일까지 있습니다.");
+var stage;
+function init(){
+	stage=document.getElementById("stage");
+	
+	createRect();
+}
+
+function createRect(){
+	var lastDate=getLastDateOfMonth(2018, 10);
+	var startDay=getStartDayOfMonth(2018,10);
+
+	var n=0; //사각형의 횟수를 세기위한 변수
+	var text; //최종적으로 출력될 문자
+	var date=0; //증가될 날짜값
+
+	for(var i=0;i<days.length;i++){
+		var rect = new Rect(stage,100,100,"yellow", days[i]);
+	}
+
+	for(var a=0;a<5;a++){
+		for(var i=0;i<7;i++){
+			if(n>=startDay){ //1단계: 원하는 사각형 번째 부터 date 를 센다
+				date++;
+				if(date<=lastDate) //2단계: 날짜도 한계지점까지 만나면 찍고 그렇지 않으면 찍지 않는다
+					text=date;
+				else
+					text=""
+			}else{
+				text="";
+			}
+			n++;
+			var rect = new Rect(stage,100,100,"yellow", text);
+			
+		}
+	}
+}
+
+addEventListener("load", function(){
+	init();
+});
+</script>
+</head>
+<body>
+	<div id="stage"></div>
+</body>
+</html>
